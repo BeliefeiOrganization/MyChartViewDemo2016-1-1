@@ -21,7 +21,7 @@
 
 @property (nonatomic, copy) NSString *tipString;
 
-@property (nonatomic, strong) UIFont *tipFont;
+@property (nonatomic, assign) CGFloat tipFontSize;
 
 @property (nonatomic, assign) NSNumber *yValue;
 

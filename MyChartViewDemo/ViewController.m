@@ -38,7 +38,6 @@
 - (void)addAnewPlot:(UIColor *)strokeColr{
     NSMutableArray *newPlotArray_1 = [NSMutableArray array];
     NSMutableArray *newPlotArray_2 = [NSMutableArray array];
-
     for (NSInteger i = 0; i < 6; i++) {
         YXPChartPoint *point = [[YXPChartPoint alloc] init];
         YXPChartPoint *point2 = [[YXPChartPoint alloc] init];
@@ -52,11 +51,12 @@
             point2.pointStrokeColor =[UIColor whiteColor];
             point2.strokeWidth = 2;
         }
+        point2.tipString = @"haha";
+        point.tipString = @"100";
         CGFloat height = ABS(arc4random()%80)+20 ;
         point.yValue = [NSNumber numberWithFloat:height];
 
         point2.yValue = [NSNumber numberWithFloat:height - 10];
-        
         [newPlotArray_2 addObject:point2];
 
         [newPlotArray_1 addObject:point];
@@ -70,21 +70,65 @@
     newPlot_2.plotStrokeColor = [UIColor blackColor];
     [self.chartView addANewPlot:newPlot_1];
     [self.chartView addANewPlot:newPlot_2];
-
+    
 }
 
 - (void)viewDidAppear:(BOOL)animated{
     [super viewDidAppear:animated];
     NSLog(@"*****%@***",NSStringFromCGSize(self.chartView.bounds.size));
     self.chartView.chartSize = self.chartView.bounds.size;
+    __weak typeof(self) weakSelf = self;
 
+    [self.chartView setXAxisScaleMsgBlock:^(NSInteger index,YXPPlot *plot) {
+        YXPChartPoint *point = plot.plotValues[index];
+        UILabel *msgLable = [UILabel new];
+        msgLable.backgroundColor = [UIColor purpleColor];
+        msgLable.font = [UIFont systemFontOfSize:10];
+        msgLable.text = [NSString stringWithFormat:@"**%zd**",index+1];
+        msgLable.textColor =[UIColor lightGrayColor];
+        msgLable.numberOfLines = 1;
+        msgLable.textAlignment = NSTextAlignmentCenter;
+        msgLable.bounds = CGRectMake(0, 0, 60, 10);
+        
+        msgLable.center = CGPointMake(point.xPoint, weakSelf.chartView.frame.origin.y);
+        [weakSelf.chartView addSubview:msgLable];
+    }];
     [self.chartView startDrawChartLineViewWithAnimation:YES];
+    [self.chartView setPointShowMsgBlock:^(NSInteger index ,NSInteger plotIndex, YXPPlot *plot) {
+        
+        YXPChartPoint *chartPoint =plot.plotValues[index];
+        UILabel *msgLable = [UILabel new];
+//        msgLable.translatesAutoresizingMaskIntoConstraints = NO;
+        msgLable.backgroundColor = index==3?[UIColor purpleColor]:[UIColor clearColor];
+        msgLable.font = [UIFont systemFontOfSize:chartPoint.tipFontSize];
+        msgLable.text = chartPoint.tipString;
+        msgLable.textColor = index==3?[UIColor orangeColor]:[UIColor blackColor];
+        msgLable.numberOfLines = 1;
+        msgLable.textAlignment = NSTextAlignmentCenter;
+        
+        msgLable.bounds = CGRectMake(0, 0, 60, 10);
+        CGFloat offsetY = plotIndex>0?chartPoint.tipFontSize/2:-chartPoint.tipFontSize/2;
+        msgLable.center = CGPointMake(chartPoint.xPoint, chartPoint.yPoint+offsetY);
+        CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
+        animation.duration = .3;
+        animation.fromValue = @.3;
+        animation.toValue = @1;
+        [msgLable.layer addAnimation:animation forKey:@"msgAnimation"];
+        [weakSelf.chartView addSubview:msgLable];
+
+    }];
+    
+   
 
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (IBAction)updateMyChartView:(id)sender{
+    [self.chartView updateChartLine];
 }
 
 @end

@@ -34,11 +34,11 @@
 
 @property (nonatomic, assign) CGSize chartSize;
 
-@property (nonatomic, copy) void(^xAxisScaleMsgBlock)(NSInteger indexXAxis,YXPChartLineView *chartLineView);
+@property (nonatomic, copy) void(^xAxisScaleMsgBlock)(NSInteger indexXAxis,YXPPlot *plot);
 
 @property (nonatomic, copy) void(^yAxisScaleMsgBlock)(NSInteger indexYAxis,YXPChartLineView *chartLineView);
 
-@property (nonatomic, copy) void(^pointShowMsgBlock)(NSInteger point, YXPPlot *plot,YXPChartLineView *chartLineView);
+@property (nonatomic, copy) void(^pointShowMsgBlock)(NSInteger pointIndexOfPlot,NSInteger plotIndex,YXPPlot *plot);
 
 
 @property (nonatomic, copy) void(^clickPointBlock)(NSInteger pointIndex, YXPPlot *plot,YXPChartLineView *chartLineView);
@@ -47,5 +47,7 @@
 - (void)addANewPlot:(YXPPlot *)plot;
 
 - (void)startDrawChartLineViewWithAnimation:(BOOL)animation;
+
+- (void)updateChartLine;
 
 @end

@@ -9,9 +9,27 @@
 #import "YXPChartLineView.h"
 
 
+
+@interface MyShaperLayer : NSObject
+
+@property (nonatomic, strong) CAShapeLayer *layer;
+
+@property (nonatomic, strong) CAAnimation *animation;
+
+@end
+
+
+@implementation MyShaperLayer
+
+
+
+@end
+
 @implementation YXPChartLineView
 {
     NSNumber *_yMaxValue;
+    
+    NSMutableArray *_contentLineData;
 }
 
 - (instancetype)init{
@@ -40,6 +58,7 @@
     self.numberOfScaleXAxis = 10;
     self.chartEdgeInsets = UIEdgeInsetsMake(0, 0, 0, 0);
     _yMaxValue = @0;
+    _contentLineData = @[].mutableCopy;
 }
 
 - (void)setChartEdgeInsets:(UIEdgeInsets)chartEdgeInsets{
@@ -58,9 +77,20 @@
     
     [self drawXYAxis];
     [self drawXYScale];
+    [self addXAxisLables];
     
 }
 
+- (void)addXAxisLables{
+
+    if (self.xAxisScaleMsgBlock) {
+        YXPPlot *plot = _plots[0];
+        for (NSInteger i=0;i<plot.plotValues.count ;i++) {
+            self.xAxisScaleMsgBlock(i,_plots[0]);
+
+        }
+    }
+}
 
 - (CGFloat)getChartViewXAxisLength{
     
@@ -154,13 +184,15 @@
     [self.layer addSublayer:axisLayer];
 }
 
+
 - (void)startDrawPlotLine{
 
      if ([self testEveryPlotPointsCountIsEqualXAxisScale]) {
+         //设置相关动画
          for (id plot in _plots) {
              [self drawPlotWithPlot:plot];
          }
-         
+         [self begainStroke];
          //画渐变
          [self drawGradualColor:_plots[0]];
 
@@ -173,6 +205,21 @@
    
 }
 
+- (void)begainStroke{
+      dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    for (MyShaperLayer *layer in _contentLineData) {
+        [layer.layer addAnimation:layer.animation forKey:NSStringFromClass([layer.animation class])];
+        [self.layer addSublayer:layer.layer];
+        if (_pointShowMsgBlock) {
+            NSInteger pointIndex = [_contentLineData indexOfObject:layer]%_numberOfScaleXAxis;
+            NSInteger plotIndex = [_contentLineData indexOfObject:layer]/_numberOfScaleXAxis;
+//            NSLog(@"------%@",)
+            self.pointShowMsgBlock(pointIndex,plotIndex ,_plots[plotIndex]);
+        }
+    }
+      });
+}
+
 - (void)addANewPlot:(YXPPlot *)plot{
     if (plot) {
         if (!_plots) {
@@ -183,10 +230,6 @@
         
     }
 }
-
-//- (void)caculateNumberOfXScale{
-//    self.numberOfScaleXAxis = self.numberOfScaleXAxis<
-//}
 
 - (void)caculateEveryPointXY{
     CGFloat YScale = (_chartSize.height - _chartEdgeInsets.bottom - _chartEdgeInsets.top-10);
@@ -261,7 +304,12 @@
         animation.toValue = @(1.0);
         [graphLayer addAnimation:animation forKey:@"strokeEnd"];
         graphLayer.path = graphPath;
-        [self.layer addSublayer:graphLayer];
+//    MyShaperLayer *layer = [[MyShaperLayer alloc] init];
+//    layer.layer = graphLayer;
+//    layer.animation = animation;
+//    [_contentLineData addObject:layer];
+    [graphLayer addAnimation:animation forKey:@"strokeEnd"];
+    [self.layer addSublayer:graphLayer];
   
 }
 
@@ -283,68 +331,36 @@
 }
 
 - (void)drawCircle:(YXPPlot *)plot{
-    
-    NSArray *afterHandlePoints = [self handleMyNeedPointsWithPlot:plot];
-    NSArray *ordinaryPoints = afterHandlePoints[0];
-    NSArray *specialPoints = afterHandlePoints[1];
-    
-    if (afterHandlePoints.count && [ordinaryPoints count]) {
-        //一般点 的涂层和操作
-        YXPChartPoint *point = ordinaryPoints[0];
-        CAShapeLayer *circleLayer = [CAShapeLayer layer];
-        circleLayer.frame = self.bounds;
-        circleLayer.fillColor = point.pointFillColor.CGColor;
-        circleLayer.backgroundColor = [UIColor clearColor].CGColor;
-        [circleLayer setStrokeColor:[UIColor whiteColor].CGColor];
-        [circleLayer setLineWidth:point.strokeWidth];
-        
-        CGMutablePathRef circlePath = CGPathCreateMutable();
-        
-        for (YXPChartPoint *point in afterHandlePoints[0]) {
-            CGPathAddEllipseInRect(circlePath, NULL, CGRectMake(point.xPoint - 5, point.yPoint - 5, 10, 10));
-        }
-        
-        circleLayer.path = circlePath;
-        CABasicAnimation *circleAnimation = [CABasicAnimation animationWithKeyPath:@"strokeEnd"];
-        circleAnimation.duration = 0.4;
-        circleAnimation.fromValue = @(0.0);
-        circleAnimation.toValue = @(1.0);
-        [circleLayer addAnimation:circleAnimation forKey:@"strokeEnd"];
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3.5 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-            [self.layer addSublayer:circleLayer];
-            
-            
-        });
-    }
-    
-    
-    
-    //特殊点涂层和操做
-    if (specialPoints.count && afterHandlePoints.count) {
-        for (YXPChartPoint *point in specialPoints) {
+
+        for (YXPChartPoint *point in plot.plotValues) {
             CAShapeLayer *circleLayer = [CAShapeLayer layer];
-            circleLayer.frame = self.bounds;
+            CGFloat radium = point.isSpecialPoint?6:5;
+            circleLayer.frame = CGRectMake(point.xPoint - radium, point.yPoint - radium, radium*2, radium*2);
             circleLayer.fillColor = point.pointFillColor.CGColor;
             circleLayer.backgroundColor = [UIColor clearColor].CGColor;
-            [circleLayer setStrokeColor:point.pointStrokeColor.CGColor];
+            [circleLayer setStrokeColor:[UIColor whiteColor].CGColor];
             [circleLayer setLineWidth:point.strokeWidth];
             
             CGMutablePathRef circlePath = CGPathCreateMutable();
-             CGPathAddEllipseInRect(circlePath, NULL, CGRectMake(point.xPoint - 6, point.yPoint - 6, 12, 12));
+            CGPathAddEllipseInRect(circlePath, NULL, CGRectMake(0, 0, radium*2, radium*2));
             circleLayer.path = circlePath;
-            CABasicAnimation *circleAnimation = [CABasicAnimation animationWithKeyPath:@"transform.scale"];
-            circleAnimation.duration = 1;
-            circleAnimation.fromValue = @(0.2);
-            circleAnimation.toValue = @(1.0);
-            [circleLayer addAnimation:circleAnimation forKey:@"strokeEnd"];
-            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(4 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
-                [self.layer addSublayer:circleLayer];
-                
-                
-            });
+            
+            CAKeyframeAnimation *keyAnimation = [CAKeyframeAnimation animationWithKeyPath:@"transform.scale"];
+            keyAnimation.duration = 1;
+            keyAnimation.values = @[@0.0,@.6,@1.3,@.6,@1];
+            keyAnimation.keyTimes = @[@0,@0.3,@0.55,@0.75,@1.0];
+            keyAnimation.repeatCount = INFINITY;
+            [circleLayer addAnimation:keyAnimation forKey:@"kScale"];
+
+            MyShaperLayer *layer = [[MyShaperLayer alloc] init];
+            layer.layer = circleLayer;
+            layer.animation = keyAnimation;
+            [_contentLineData addObject:layer];
+            
         }
-    }
+        
     
+
    
 }
 
@@ -375,24 +391,37 @@
     CGPathAddLineToPoint(graphPath, NULL, lastPoint.xPoint, _chartSize.height-_chartEdgeInsets.bottom);
     CGPathAddLineToPoint(graphPath, NULL, _chartEdgeInsets.left, _chartSize.height-_chartEdgeInsets.bottom);
     CGPathCloseSubpath(graphPath);
-    
-     CGPathRef beginPath = [UIBezierPath bezierPathWithRect:CGRectMake(_chartEdgeInsets.left, _chartSize.height-_chartEdgeInsets.top, 0, _chartSize.height-_chartEdgeInsets.top-_chartEdgeInsets.bottom)].CGPath;
-    
-//    CGPathRef endPath = [UIBezierPath bezierPathWithRect:CGRectMake(_chartEdgeInsets.left, _chartSize.height-_chartEdgeInsets.top, _chartSize.height-_chartEdgeInsets.left-_chartEdgeInsets.right, _chartSize.height-_chartEdgeInsets.top-_chartEdgeInsets.bottom)].CGPath;
+
     maskLayer.path = graphPath;
     gradientLayer.mask = maskLayer;
-//    self.layer.mask = contentShapeLayer;
 
-//    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"path"];
-//    animation.duration = 3;
-//    animation.fromValue = (id)maskLayer.path;
-//    animation.toValue = (__bridge id)graphPath;
-//    animation.removedOnCompletion = NO;
-//    animation.fillMode = kCAFillModeForwards;
-//    [maskLayer addAnimation:animation forKey:@"strokeXAxis"];
+    CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:@"path"];
+    animation.duration = 3;
+    animation.fromValue = (id)maskLayer.path;
+    animation.toValue = (__bridge id)graphPath;
+    animation.removedOnCompletion = NO;
+    animation.fillMode = kCAFillModeForwards;
+    [maskLayer addAnimation:animation forKey:@"strokeXAxis"];
 
 
 }
 
+- (void)updateChartLine{
+    for (UIView *subView in self.subviews) {
+        [subView removeFromSuperview];
+    }
+    
+    for (CALayer *layer in self.layer.sublayers) {
+        [layer removeAllAnimations];
+
+    }
+    self.layer.sublayers = nil;
+    _contentLineData = @[].mutableCopy;
+    [self startDrawChartLineViewWithAnimation:YES];
+    
+}
+
 
 @end
+
+

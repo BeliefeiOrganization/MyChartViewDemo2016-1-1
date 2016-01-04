@@ -16,6 +16,8 @@
 		A2B3A6051C337C32003C44B7 /* YXPChartLineView.m in Sources */ = {isa = PBXBuildFile; fileRef = A2B3A6041C337C32003C44B7 /* YXPChartLineView.m */; };
 		A2B3A6081C33E40A003C44B7 /* YXPPlot.m in Sources */ = {isa = PBXBuildFile; fileRef = A2B3A6071C33E40A003C44B7 /* YXPPlot.m */; };
 		A2B3A60B1C33EF35003C44B7 /* YXPChartPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = A2B3A60A1C33EF35003C44B7 /* YXPChartPoint.m */; };
+		A2B3A60E1C3A620B003C44B7 /* YXPChartBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = A2B3A60D1C3A620B003C44B7 /* YXPChartBarView.m */; };
+		A2B3A6111C3A73A9003C44B7 /* YXPBarView.m in Sources */ = {isa = PBXBuildFile; fileRef = A2B3A6101C3A73A8003C44B7 /* YXPBarView.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -35,6 +37,10 @@
 		A2B3A6071C33E40A003C44B7 /* YXPPlot.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YXPPlot.m; sourceTree = "<group>"; };
 		A2B3A6091C33EF35003C44B7 /* YXPChartPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YXPChartPoint.h; sourceTree = "<group>"; };
 		A2B3A60A1C33EF35003C44B7 /* YXPChartPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YXPChartPoint.m; sourceTree = "<group>"; };
+		A2B3A60C1C3A620B003C44B7 /* YXPChartBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YXPChartBarView.h; sourceTree = "<group>"; };
+		A2B3A60D1C3A620B003C44B7 /* YXPChartBarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YXPChartBarView.m; sourceTree = "<group>"; };
+		A2B3A60F1C3A73A8003C44B7 /* YXPBarView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = YXPBarView.h; sourceTree = "<group>"; };
+		A2B3A6101C3A73A8003C44B7 /* YXPBarView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = YXPBarView.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +79,10 @@
 				A2B3A5F31C337C04003C44B7 /* ViewController.m */,
 				A2B3A6031C337C32003C44B7 /* YXPChartLineView.h */,
 				A2B3A6041C337C32003C44B7 /* YXPChartLineView.m */,
+				A2B3A60C1C3A620B003C44B7 /* YXPChartBarView.h */,
+				A2B3A60D1C3A620B003C44B7 /* YXPChartBarView.m */,
+				A2B3A60F1C3A73A8003C44B7 /* YXPBarView.h */,
+				A2B3A6101C3A73A8003C44B7 /* YXPBarView.m */,
 				A2B3A6061C33E40A003C44B7 /* YXPPlot.h */,
 				A2B3A6071C33E40A003C44B7 /* YXPPlot.m */,
 				A2B3A6091C33EF35003C44B7 /* YXPChartPoint.h */,
@@ -164,10 +174,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A2B3A6111C3A73A9003C44B7 /* YXPBarView.m in Sources */,
 				A2B3A5F41C337C04003C44B7 /* ViewController.m in Sources */,
 				A2B3A60B1C33EF35003C44B7 /* YXPChartPoint.m in Sources */,
 				A2B3A5F11C337C04003C44B7 /* AppDelegate.m in Sources */,
 				A2B3A5EE1C337C04003C44B7 /* main.m in Sources */,
+				A2B3A60E1C3A620B003C44B7 /* YXPChartBarView.m in Sources */,
 				A2B3A6051C337C32003C44B7 /* YXPChartLineView.m in Sources */,
 				A2B3A6081C33E40A003C44B7 /* YXPPlot.m in Sources */,
 			);
@@ -316,6 +328,7 @@
 				A2B3A6021C337C04003C44B7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

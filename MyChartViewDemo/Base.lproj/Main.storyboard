@@ -22,11 +22,20 @@
                                 <rect key="frame" x="0.0" y="225" width="600" height="150"/>
                                 <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                             </view>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lMO-1a-YhL">
+                                <rect key="frame" x="285" y="409" width="30" height="30"/>
+                                <state key="normal" title="刷新"/>
+                                <connections>
+                                    <action selector="updateMyChartView:" destination="BYZ-38-t0r" eventType="touchUpInside" id="E8E-cH-pUu"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="Vtf-1b-shq" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" multiplier="1:4" id="Fwm-uo-lO9"/>
+                            <constraint firstItem="lMO-1a-YhL" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="L0e-p7-HrH"/>
                             <constraint firstItem="Vtf-1b-shq" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="bPJ-U0-O6U"/>
+                            <constraint firstItem="lMO-1a-YhL" firstAttribute="top" secondItem="Vtf-1b-shq" secondAttribute="bottom" constant="34" id="bmV-tz-ue1"/>
                             <constraint firstItem="Vtf-1b-shq" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="ofz-6A-qOF"/>
                             <constraint firstItem="Vtf-1b-shq" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="ohm-1Q-Zkq"/>
                         </constraints>

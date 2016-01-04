@@ -45,7 +45,7 @@
     self.pointFillColor = [UIColor purpleColor];
     self.strokeWidth = 1;
     self.pointStrokeColor = [UIColor greenColor];
-    self.tipFont = [UIFont systemFontOfSize:13];
+    self.tipFontSize = 13;
     
 }
 
