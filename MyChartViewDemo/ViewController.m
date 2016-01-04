@@ -82,7 +82,7 @@
     [self.chartView setXAxisScaleMsgBlock:^(NSInteger index,YXPPlot *plot) {
         YXPChartPoint *point = plot.plotValues[index];
         UILabel *msgLable = [UILabel new];
-        msgLable.backgroundColor = [UIColor purpleColor];
+        msgLable.backgroundColor = [UIColor clearColor];
         msgLable.font = [UIFont systemFontOfSize:10];
         msgLable.text = [NSString stringWithFormat:@"**%zd**",index+1];
         msgLable.textColor =[UIColor lightGrayColor];
@@ -90,7 +90,7 @@
         msgLable.textAlignment = NSTextAlignmentCenter;
         msgLable.bounds = CGRectMake(0, 0, 60, 10);
         
-        msgLable.center = CGPointMake(point.xPoint, weakSelf.chartView.frame.origin.y);
+        msgLable.center = CGPointMake(point.xPoint, weakSelf.chartView.bounds.size.height-10);
         [weakSelf.chartView addSubview:msgLable];
     }];
     [self.chartView startDrawChartLineViewWithAnimation:YES];

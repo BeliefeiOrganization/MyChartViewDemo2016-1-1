@@ -70,7 +70,7 @@
     [self caculateEveryPointXY];
     [self startDrawXYAxisAndScale];
     [self startDrawPlotLine];
-    self.backgroundColor = [UIColor whiteColor];
+    self.backgroundColor = [UIColor yellowColor];
 }
 
 - (void)startDrawXYAxisAndScale{
